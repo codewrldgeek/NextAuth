@@ -31,7 +31,17 @@ export default async function middleware(req: NextRequest) {
 
     // Redirect unauthenticated users trying to access protected routes
     if (!isLoggedIn && !isPublicRoute) {
-        return NextResponse.redirect(new URL("/auth/login", nextUrl));
+        let callbackUrl = nextUrl.pathname;
+        if (nextUrl.search) {
+            callbackUrl += nextUrl.search;
+        }
+
+        const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+        return NextResponse.redirect(new URL(
+            `/auth/login?${encodedCallbackUrl}`, 
+            nextUrl
+        ));
     }
 
     return NextResponse.next();

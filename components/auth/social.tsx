@@ -3,15 +3,18 @@ import { useCallback } from "react";
 import { signIn } from "@/actions/auth-actions";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LOGIN_REDIRECT_URL } from "@/routes";
 
 export const Social = () => {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl");
     const onClick = useCallback((provider: "google" | "github") => {
-        signIn(provider, DEFAULT_LOGIN_REDIRECT_URL);
-    }, []);
-
+        signIn(provider, callbackUrl || DEFAULT_LOGIN_REDIRECT_URL);
+    }, [callbackUrl]);
+    
     return (
         <div className="flex items-center w-full gap-x-2">
             <Button
